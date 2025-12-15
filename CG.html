@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CG3 テスト対策予想問題50選</title>
+    <style>
+        body { font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: 0 auto; padding: 20px; background-color: #f9f9f9; }
+        h1 { text-align: center; color: #444; border-bottom: 2px solid #ddd; padding-bottom: 10px; }
+        .category { margin-top: 40px; font-size: 1.2em; font-weight: bold; color: #0056b3; border-left: 5px solid #0056b3; padding-left: 10px; }
+        .question-box { background: #fff; border: 1px solid #ddd; border-radius: 5px; margin-bottom: 15px; padding: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .q-text { font-weight: bold; margin-bottom: 10px; }
+        .answer-btn { background-color: #28a745; color: white; border: none; padding: 5px 15px; border-radius: 3px; cursor: pointer; font-size: 0.9em; }
+        .answer-btn:hover { background-color: #218838; }
+        .answer-text { margin-top: 10px; display: none; color: #d63384; font-weight: bold; background-color: #fce4ec; padding: 10px; border-radius: 3px; }
+        .note { font-size: 0.85em; color: #666; margin-top: 5px; }
+    </style>
+    <script>
+        function toggleAnswer(id) {
+            var x = document.getElementById(id);
+            if (x.style.display === "none" || x.style.display === "") {
+                x.style.display = "block";
+            } else {
+                x.style.display = "none";
+            }
+        }
+    </script>
+</head>
+<body>
+
+    <h1>CG3 テスト対策予想問題 50問</h1>
+    <p>授業スライド（GeometryShader, Lighting, Particle, Instancing, Blend, Assimp等）の内容に基づいた一問一答形式の問題集です。</p>
+
+    <div class="category">ジオメトリシェーダ (GS)</div>
+
+    <div class="question-box">
+        <div class="q-text">Q1. ジオメトリシェーダにおいて、頂点を出力ストリームに追加するために使用する関数は何か？</div>
+        <button class="answer-btn" onclick="toggleAnswer('a1')">答えを見る</button>
+        <div id="a1" class="answer-text">Append()</div>
+    </div>
+
+    <div class="question-box">
+        <div class="q-text">Q2. ジオメトリシェーダで、現在のプリミティブのストリップ（繋がり）を切り、新しいプリミティブを開始するための関数は何か？</div>
+        <button class="answer-btn" onclick="toggleAnswer('a2')">答えを見る</button>
+        <div id="a2" class="answer-text">RestartStrip()</div>
+    </div>
+
+    <div class="question-box">
+        <div class="q-text">Q3. HLSLの属性で、ジオメトリシェーダが出力できる最大の頂点数を指定するものは何か？</div>
+        <button class="answer-btn" onclick="toggleAnswer('a3')">答えを見る</button>
+        <div id="a3" class="answer-text">[maxvertexcount(数値)]</div>
+    </div>
+
+    <div class="question-box">
+        <div class="q-text">Q4. 三角形を入力として受け取り、三角形を出力する場合のストリーム型 `TriangleStream<GSOutput>` を使用するが、点を出力する場合のストリーム型は何か？</div>
+        <button class="answer-btn" onclick="toggleAnswer('a4')">答えを見る</button>
+        <div id="a4" class="answer-text">PointStream&lt;GSOutput&gt;</div>
+    </div>
+
+    <div class="question-box">
+        <div class="q-text">Q5. ジオメトリシェーダへの入力として「点」を受け取る場合、`void main( ??? input[1], ...)` の `???` に入るプリミティブ種別は何か？</div>
+        <button class="answer-btn" onclick="toggleAnswer('a5')">答えを見る</button>
+        <div id="a5" class="answer-text">point</div>
+    </div>
+
+    <div class="question-box">
+        <div class="q-text">Q6. 1つの頂点から四角形（ビルボードなど）を生成する場合、一般的にいくつの頂点を出力する必要があるか（トライアングルストリップを使用する場合）？</div>
+        <button class="answer-btn" onclick="toggleAnswer('a6')">答えを見る</button>
+        <div id="a6" class="answer-text">4つ</div>
+        <div class="note">※3角形2つ分ですが、ストリップなら4頂点で表現可能です。</div>
+    </div>
+
+    <div class="question-box">
+        <div class="q-text">Q7. ジオメトリシェーダを利用する場合、C++側で設定する `PrimitiveTopologyType` は、点データを送るなら何に設定すべきか？</div>
+        <button class="answer-btn" onclick="toggleAnswer('a7')">答えを見る</button>
+        <div id="a7" class="answer-text">D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT</div>
+    </div>
+
+    <div class="category">ライティング (Lighting)</div>
+
+    <div class="question-box">
+        <div class="q-text">Q8. Phong反射モデルにおいて、鏡面反射（Specular）の計算に使われる、光沢度（ハイライトの鋭さ）を表すパラメータを一般になんと呼ぶか？</div>
+        <button class="answer-btn" onclick="toggleAnswer('a8')">答えを見る</button>
+        <div id="a8" class="answer-text">Shininess (シャイネス)</div>
+    </div>
+
+    <div class="question-box">
+        <div class="q-text">Q9. Blinn-Phong反射モデルで、ライトベクトル(L)と視線ベクトル(V)の中間を表すベクトルを何と呼ぶか？</div>
+        <button class="answer-btn" onclick="toggleAnswer('a9')">答えを見る</button>
+        <div id="a9" class="answer-text">Half Vector (ハーフベクトル)</div>
+    </div>
+
+    <div class="question-box">
+        <div class="q-text">Q10. ハーフベクトル $H$ を求める式は？（$L$:ライト方向へのベクトル、$V$:視点方向へのベクトルとする）</div>
+        <button class="answer-btn" onclick="toggleAnswer('a10')">答えを見る</button>
+        <div id="a10" class="answer-text">normalize(L + V) または normalize(-L + V) ※定義によるが、Lを光源へ向かうベクトルとするなら L+V</div>
+    </div>
+
+    <div class="question-box">
+        <div class="q-text">Q11. PointLight（点光源）の明るさが距離の二乗に反比例して減衰する法則を何というか？</div>
+        <button class="answer-btn" onclick="toggleAnswer('a11')">答えを見る</button>
+        <div id="a11" class="answer-text">逆二乗則</div>
+    </div>
+
+    <div class="question-box">
+        <div class="q-text">Q12. SpotLight（スポットライト）特有のパラメータで、光が当たる範囲（角度）による減衰を何と呼ぶか？</div>
+        <button class="answer-btn" onclick="toggleAnswer('a12')">答えを見る</button>
+        <div id="a12" class="answer-text">Falloff (フォールオフ)</div>
+    </div>
+
+    <div class="question-box">
+        <div class="q-text">Q13. オブジェクトに「非均一スケール（各軸で倍率が違う）」がかかっている場合、法線ベクトルを正しく変換するために用いる行列は、ワールド行列の何の行列か？</div>
+        <button class="answer-btn" onclick="toggleAnswer('a13')">答えを見る</button>
+        <div id="a13" class="answer-text">逆転置行列 (Inverse Transpose Matrix)</div>
+    </div>
+
+    <div class="question-box">
+        <div class="q-text">Q14. ディレクショナル、ポイント、スポットライトのように、幾何学的な点として扱われるライトの総称は？</div>
+        <button class="answer-btn" onclick="toggleAnswer('a14')">答えを見る</button>
+        <div id="a14" class="answer-text">Punctual Light (パンクチュアルライト)</div>
+    </div>
+
+    <div class="question-box">
+        <div class="q-text">Q15. HLSLの組み込み関数で、ベクトルの反射ベクトルを求める関数は？</div>
+        <button class="answer-btn" onclick="toggleAnswer('a15')">答えを見る</button>
+        <div id="a15" class="answer-text">reflect()</div>
+    </div>
+
+    <div class="question-box">
+        <div class="q-text">Q16. HLSLの組み込み関数で、値を0.0～1.0の範囲にクランプする（収める）関数は？</div>
+        <button class="answer-btn" onclick="toggleAnswer('a16')">答えを見る</button>
+        <div id="a16" class="answer-text">saturate()</div>
+    </div>
+
+    <div class="category">パーティクル・ビルボード</div>
+
+    <div class="question-box">
+        <div class="q-text">Q17. 板ポリゴンが常にカメラの方向を向くように処理する技術を何と呼ぶか？</div>
+        <button class="answer-btn" onclick="toggleAnswer('a17')">答えを見る</button>
+        <div id="a17" class="answer-text">Billboard (ビルボード)</div>
+    </div>
+
+    <div class="question-box">
+        <div class="q-text">Q18. ビルボード行列を作成する際、カメラのワールド行列の「回転成分」を適用するだけでよいか、逆回転を適用すべきか？</div>
+        <button class="answer-btn" onclick="toggleAnswer('a18')">答えを見る</button>
+        <div id="a18" class="answer-text">カメラと同じ回転を適用する（正対させるため）</div>
+    </div>
+
+    <div class="question-box">
+        <div class="q-text">Q19. パーティクルにおいて、位置や回転は異なるが同じメッシュを一度のドローコールで大量に描画する技術は？</div>
+        <button class="answer-btn" onclick="toggleAnswer('a19')">答えを見る</button>
+        <div id="a19" class="answer-text">Instancing (インスタンシング)</div>
+    </div>
+
+    <div class="question-box">
+        <div class="q-text">Q20. インスタンシング描画を行う際のコマンドは `DrawIndexedInstanced` や `DrawInstanced` だが、HLSLのVSで現在のインスタンス番号を取得するためのセマンティクスは？</div>
+        <button class="answer-btn" onclick="toggleAnswer('a20')">答えを見る</button>
+        <div id="a20" class="answer-text">SV_InstanceID</div>
+    </div>
+
+    <div class="question-box">
+        <div class="q-text">Q21. インスタンシングで使用する、配列のようにデータにアクセスできる読み取り専用のバッファリソース（SRVとしてバインドするもの）を何と呼ぶか？</div>
+        <button class="answer-btn" onclick="toggleAnswer('a21')">答えを見る</button>
+        <div id="a21" class="answer-text">Structured Buffer (ストラクチャードバッファ)</div>
+    </div>
+
+    <div class="question-box">
+        <div class="q-text">Q22. パーティクルを発生させる装置・発生源のことを一般になんと呼ぶか？</div>
+        <button class="answer-btn" onclick="toggleAnswer('a22')">答えを見る</button>
+        <div id="a22" class="answer-text">Emitter (エミッタ)</div>
+    </div>
+
+    <div class="question-box">
+        <div class="q-text">Q23. パーティクルに「風」や「重力」などの影響を与える、効果範囲と効果を持った概念を何と呼ぶか？</div>
+        <button class="answer-btn" onclick="toggleAnswer('a23')">答えを見る</button>
+        <div id="a23" class="answer-text">Field (フィールド / 場)</div>
+    </div>
+
+    <div class="question-box">
+        <div class="q-text">Q24. Y軸回転のみを適用して、常にカメラの方を向く（木や草などに使われる）ビルボードを特に何と呼ぶか？</div>
+        <button class="answer-btn" onclick="toggleAnswer('a24')">答えを見る</button>
+        <div id="a24" class="answer-text">Y軸ビルボード（または軸固定ビルボード）</div>
+    </div>
+
+    <div class="category">ブレンディング (Blending)</div>
+
+    <div class="question-box">
+        <div class="q-text">Q25. アルファブレンディング（通常ブレンド）の計算式 `SrcColor * A + DestColor * B` において、係数 `A` は何か？</div>
+        <button class="answer-btn" onclick="toggleAnswer('a25')">答えを見る</button>
+        <div id="a25" class="answer-text">SrcAlpha</div>
+    </div>
+
+    <div class="question-box">
+        <div class="q-text">Q26. アルファブレンディング（通常ブレンド）の計算式において、係数 `B` は何か？</div>
+        <button class="answer-btn" onclick="toggleAnswer('a26')">答えを見る</button>
+        <div id="a26" class="answer-text">1 - SrcAlpha (INV_SRC_ALPHA)</div>
+    </div>
+
+    <div class="question-box">
+        <div class="q-text">Q27. 加算合成（Add Blend）の場合、DestBlendの設定は何にする必要があるか？</div>
+        <button class="answer-btn" onclick="toggleAnswer('a27')">答えを見る</button>
+        <div id="a27" class="answer-text">D3D12_BLEND_ONE (1)</div>
+    </div>
+
+    <div class="question-box">
+        <div class="q-text">Q28. 描画色のアルファ値が0（または閾値以下）の場合に、ピクセルシェーダで処理を打ち切り、何も描画しない命令は？</div>
+        <button class="answer-btn" onclick="toggleAnswer('a28')">答えを見る</button>
+        <div id="a28" class="answer-text">discard;</div>
+    </div>
+
+    <div class="question-box">
+        <div class="q-text">Q29. 2値抜き（アルファテスト）を行う際、不透明部分のデプスバッファへの書き込みは行うべきか、行わないべきか？</div>
+        <button class="answer-btn" onclick="toggleAnswer('a29')">答えを見る</button>
+        <div id="a29" class="answer-text">行うべき</div>
+        <div class="note">※discardされたピクセルは書き込まれませんが、残ったピクセルは不透明として扱うため書き込みます。</div>
+    </div>
+
+    <div class="question-box">
+        <div class="q-text">Q30. 半透明合成を行う際、一般的にデプスバッファへの書き込み（DepthWrite）はどう設定するか？</div>
+        <button class="answer-btn" onclick="toggleAnswer('a30')">答えを見る</button>
+        <div id="a30" class="answer-text">行わない (D3D12_DEPTH_WRITE_MASK_ZERO)</div>
+    </div>
+
+    <div class="category">モデル読み込み (Assimp/glTF)</div>
+
+    <div class="question-box">
+        <div class="q-text">Q31. Assimpライブラリにおいて、読み込んだシーン全体のルートとなるクラス（構造体）名は？</div>
+        <button class="answer-btn" onclick="toggleAnswer('a31')">答えを見る</button>
+        <div id="a31" class="answer-text">aiScene</div>
+    </div>
+
+    <div class="question-box">
+        <div class="q-text">Q32. glTF形式などのモデルデータにおいて、階層構造（親子関係）を持つ構成要素を何と呼ぶか？</div>
+        <button class="answer-btn" onclick="toggleAnswer('a32')">答えを見る</button>
+        <div id="a32" class="answer-text">Node (ノード)</div>
+    </div>
+
+    <div class="question-box">
+        <div class="q-text">Q33. Assimpは右手系座標だが、DirectXは左手系座標である。Z軸を反転させるなどで手動対応する場合、ポリゴンの面が裏返るため、何を反転させる必要があるか？（頂点位置以外で）</div>
+        <button class="answer-btn" onclick="toggleAnswer('a33')">答えを見る</button>
+        <div id="a33" class="answer-text">法線ベクトル（またはインデックスの順番）</div>
+    </div>
+
+    <div class="question-box">
+        <div class="q-text">Q34. glTFは何の略称か？</div>
+        <button class="answer-btn" onclick="toggleAnswer('a34')">答えを見る</button>
+        <div id="a34" class="answer-text">GL Transmission Format</div>
+    </div>
+
+    <div class="question-box">
+        <div class="q-text">Q35. Assimpでテクスチャのファイルパスを取得する際、`aiMaterial` のどの関数を使うか？</div>
+        <button class="answer-btn" onclick="toggleAnswer('a35')">答えを見る</button>
+        <div id="a35" class="answer-text">GetTexture</div>
+    </div>
+
+    <div class="category">実装・その他</div>
+
+    <div class="question-box">
+        <div class="q-text">Q36. パーティクルを管理する際、固定長配列ではなく、動的に出し入れがしやすいC++標準ライブラリのコンテナクラスは何が適しているか（スライドで使用されていたもの）？</div>
+        <button class="answer-btn" onclick="toggleAnswer('a36')">答えを見る</button>
+        <div id="a36" class="answer-text">std::list</div>
+    </div>
+
+    <div class="question-box">
+        <div class="q-text">Q37. `std::list` を `for` 文で回している最中に、要素（パーティクル）を削除する場合、イテレータの扱いはどうすべきか？</div>
+        <button class="answer-btn" onclick="toggleAnswer('a37')">答えを見る</button>
+        <div id="a37" class="answer-text">eraseの戻り値を次のイテレータとして受け取る</div>
+    </div>
+
+    <div class="question-box">
+        <div class="q-text">Q38. パーティクルの生存期間を表すパラメータを一般に英語で何というか？</div>
+        <button class="answer-btn" onclick="toggleAnswer('a38')">答えを見る</button>
+        <div id="a38" class="answer-text">LifeTime</div>
+    </div>
+
+    <div class="question-box">
+        <div class="q-text">Q39. C++20から導入された、円周率 `pi` などを含む数学定数ライブラリのヘッダは？</div>
+        <button class="answer-btn" onclick="toggleAnswer('a39')">答えを見る</button>
+        <div id="a39" class="answer-text">&lt;numbers&gt;</div>
+    </div>
+
+    <div class="question-box">
+        <div class="q-text">Q40. パーティクルが「徐々に消える」表現をするために、生存期間の終わりにかけて変化させるパラメータは？</div>
+        <button class="answer-btn" onclick="toggleAnswer('a40')">答えを見る</button>
+        <div id="a40" class="answer-text">アルファ値 (透明度)</div>
+    </div>
+
+    <div class="question-box">
+        <div class="q-text">Q41. インスタンシング描画において、GPU側でバッファオーバーラン（確保した数以上のアクセス）が発生するとどうなるか？</div>
+        <button class="answer-btn" onclick="toggleAnswer('a41')">答えを見る</button>
+        <div id="a41" class="answer-text">警告なしにメモリが破壊される（Debug Layerでも捕捉されないことがある）</div>
+    </div>
+
+    <div class="question-box">
+        <div class="q-text">Q42. ピクセルシェーダで、テクスチャの色をサンプリングする関数は？</div>
+        <button class="answer-btn" onclick="toggleAnswer('a42')">答えを見る</button>
+        <div id="a42" class="answer-text">tex.Sample(smp, uv)</div>
+    </div>
+
+    <div class="question-box">
+        <div class="q-text">Q43. ジオメトリシェーダで、受け取った頂点座標を少しずらして複数の頂点を生成することで、擬似的に何を表現できるか（スライドの例）？</div>
+        <button class="answer-btn" onclick="toggleAnswer('a43')">答えを見る</button>
+        <div id="a43" class="answer-text">パーティクル（板ポリゴン）の生成、線の生成など</div>
+    </div>
+
+    <div class="question-box">
+        <div class="q-text">Q44. アルファテスト（2値抜き）は、主にどのようなオブジェクトの描画に使われるか？</div>
+        <button class="answer-btn" onclick="toggleAnswer('a44')">答えを見る</button>
+        <div id="a44" class="answer-text">金網、草むら、フェンスなど</div>
+    </div>
+
+    <div class="question-box">
+        <div class="q-text">Q45. 半透明描画を行う際、描画順序は一般的にどうあるべきか？</div>
+        <button class="answer-btn" onclick="toggleAnswer('a45')">答えを見る</button>
+        <div id="a45" class="answer-text">奥から手前へ</div>
+    </div>
+
+    <div class="question-box">
+        <div class="q-text">Q46. 加算合成（Add Blend）は描画順序に依存するか？</div>
+        <button class="answer-btn" onclick="toggleAnswer('a46')">答えを見る</button>
+        <div id="a46" class="answer-text">依存しない（可換であるため）</div>
+    </div>
+
+    <div class="question-box">
+        <div class="q-text">Q47. パーティクルの初期化で、ランダムな値を生成するために使用するC++標準の分布生成器クラスは？</div>
+        <button class="answer-btn" onclick="toggleAnswer('a47')">答えを見る</button>
+        <div id="a47" class="answer-text">std::uniform_real_distribution</div>
+    </div>
+
+    <div class="question-box">
+        <div class="q-text">Q48. パーティクルシステムにおいて、CPU側で管理するリストからGPU側のStructured Bufferにデータを転送する際、何のメソッドを使うか（リソースへの書き込み）？</div>
+        <button class="answer-btn" onclick="toggleAnswer('a48')">答えを見る</button>
+        <div id="a48" class="answer-text">Map / Unmap (またはmemcpy)</div>
+    </div>
+
+    <div class="question-box">
+        <div class="q-text">Q49. PIXなどのグラフィックスデバッガを使用する目的は？</div>
+        <button class="answer-btn" onclick="toggleAnswer('a49')">答えを見る</button>
+        <div id="a49" class="answer-text">描画内容の解析、デバッグ、パフォーマンス計測など</div>
+    </div>
+
+    <div class="question-box">
+        <div class="q-text">Q50. ジオメトリシェーダは将来的になくなると言われているが、代替となる新しいシェーダ機能は何か？</div>
+        <button class="answer-btn" onclick="toggleAnswer('a50')">答えを見る</button>
+        <div id="a50" class="answer-text">Mesh Shader (メッシュシェーダ)</div>
+    </div>
+
+</body>
+</html>
