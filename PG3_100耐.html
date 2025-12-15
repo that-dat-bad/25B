@@ -257,7 +257,7 @@
         // 元データ（secはタグとして利用）
         const masterQuestions = [
             // 分野1: STL
-            { q: "STLとは何の略称か。", a: "Standard Template Library", tag: "STL" },
+            { q: "STLとは何の略称か。", a: "Standard Template Library(標準テンプレートライブラリ)", tag: "STL" },
             { q: "STLの3大構成要素を答えよ（コンテナ、○○○、アルゴリズム）。", a: "イテレータ (Iterator)", tag: "STL" },
             { q: "std::vector と std::list の主な違いを、メモリアクセスと挿入・削除の観点から説明せよ。", a: "vector：ランダムアクセスが高速、末尾以外への挿入削除は遅い。\nlist：ランダムアクセス不可、任意位置への挿入削除が高速。", tag: "STL" },
             { q: "std::vector において、末尾への要素追加を行うメンバ関数は何か。", a: "push_back()", tag: "STL" },
@@ -342,7 +342,7 @@
             { q: "デッドロックとは？", a: "互いにリソース待ちをして処理が止まる状態", tag: "Thread" },
             { q: "lock/unlockを手動で呼ぶ危険性は？", a: "unlock忘れによるデッドロック", tag: "Thread" },
             { q: "スコープ離脱時に自動でロック解除するクラスは？", a: "std::lock_guard", tag: "Thread" },
-            { q: "unique_lock と lock_guard の違いは？", a: "unique_lockは手動ロック操作や条件変数での待機が可能", tag: "Thread" },
+            { q: "unique_lock と lock_guard の違いは？", a: "lock_guardはブロック単位でしかロックできないが、unique_lockは任意のタイミングでロック解除（待機）が可能で、条件変数(wait)にも使用できる。", tag: "Thread" },
             { q: "条件変数(condition_variable)の目的は？", a: "スレッドの待機(wait)と通知(notify)", tag: "Thread" },
             { q: "wait()の引数に必要なものは？", a: "unique_lock", tag: "Thread" },
             { q: "待機スレッドを再開させる関数は？", a: "notify_all() / notify_one()", tag: "Thread" },
