@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GE3 ゲームエンジン開発 最終予想問題集 (全50問)</title>
+    <style>
+        :root {
+            --primary-color: #2980b9;
+            --accent-color: #e74c3c;
+            --success-color: #27ae60;
+            --bg-color: #ecf0f1;
+            --card-bg: #ffffff;
+            --text-color: #2c3e50;
+        }
+
+        body {
+            font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+
+        /* コントロールパネル */
+        .controls {
+            position: sticky;
+            top: 0;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 0;
+            border-bottom: 1px solid #ddd;
+            z-index: 100;
+            margin-bottom: 30px;
+        }
+
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            font-weight: bold;
+            color: #7f8c8d;
+        }
+
+        .progress-container {
+            flex-grow: 1;
+            height: 10px;
+            background-color: #bdc3c7;
+            border-radius: 5px;
+            margin: 0 15px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: var(--success-color);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #fff;
+            transition: opacity 0.2s;
+        }
+        .btn:hover { opacity: 0.9; }
+        .btn-reset { background-color: #95a5a6; }
+        .btn-shuffle { background-color: #f39c12; }
+        .btn-show-all { background-color: var(--primary-color); }
+
+        /* 問題カード */
+        .quiz-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: #fff;
+            transition: transform 0.2s;
+            position: relative;
+        }
+        
+        .quiz-card:hover {
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .quiz-card.hidden {
+            display: none;
+        }
+
+        .q-number {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 0.85em;
+            color: #95a5a6;
+            font-weight: bold;
+        }
+
+        .question {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin: 20px 0 15px 0;
+            color: var(--text-color);
+        }
+
+        /* 答えエリア */
+        details {
+            margin-top: 15px;
+            border-top: 1px dashed #ccc;
+        }
+
+        summary {
+            padding: 10px;
+            cursor: pointer;
+            color: var(--primary-color);
+            font-weight: bold;
+            list-style: none;
+            outline: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        summary::after {
+            content: "答えを見る ▼";
+            font-size: 0.9em;
+        }
+
+        details[open] summary {
+            border-bottom: 1px solid #eee;
+        }
+
+        details[open] summary::after {
+            content: "閉じる ▲";
+            color: #aaa;
+        }
+
+        .answer-content {
+            padding: 15px;
+            background-color: #f9fbfd;
+            border-left: 5px solid var(--primary-color);
+        }
+
+        .answer-text {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #c0392b;
+            margin-bottom: 10px;
+        }
+
+        .explanation {
+            font-size: 0.95em;
+            color: #555;
+        }
+
+        .source-cite {
+            display: block;
+            margin-top: 8px;
+            font-size: 0.8em;
+            color: #999;
+            text-align: right;
+        }
+
+        /* 完了ボタン */
+        .check-btn {
+            margin-top: 15px;
+            background-color: #fff;
+            border: 2px solid var(--success-color);
+            color: var(--success-color);
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .check-btn:hover {
+            background-color: var(--success-color);
+            color: #fff;
+        }
+
+        @media (max-width: 600px) {
+            .container { padding: 15px; }
+            .question { font-size: 1.1em; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>GE3 最終予想問題集 (全50問)</h1>
+
+    <div class="controls">
+        <div class="status-bar">
+            <span id="progress-text">習得率: 0 / 50</span>
+            <div class="progress-container">
+                <div class="progress-fill" id="progress-bar"></div>
+            </div>
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-show-all" onclick="toggleAllAnswers()">全ての答えを開閉</button>
+            <button class="btn btn-shuffle" onclick="shuffleQuestions()">出題順をシャッフル</button>
+            <button class="btn btn-reset" onclick="resetProgress()">リセット (最初から)</button>
+        </div>
+    </div>
+
+    <div id="quiz-list">
+        </div>
+</div>
+
+<script>
+    // 問題データ (50問)
+    const questions = [
+        {
+            q: "DirectX 12の初期化において、GPUに対する命令を積み込んでおくためのリスト状のオブジェクトを何と呼ぶか？",
+            a: "CommandList (コマンドリスト)",
+            exp: "GPUに実行させたい命令（描画、リソース転送など）を記録するためのオブジェクト。これをCommandQueueにExecuteすることで実行される。",
+            src: "slides_046.pdf"
+        },
+        {
+            q: "CommandListに積まれた命令を順次実行するために、GPUへ送信する待ち行列（キュー）を何と呼ぶか？",
+            a: "CommandQueue (コマンドキュー)",
+            exp: "CPU側で作成したコマンドリストを受け取り、GPUに順次処理させるための窓口。",
+            src: "slides_046.pdf"
+        },
+        {
+            q: "画面のチラつき（ティアリング）を防ぐために、表画面と裏画面の2枚のバッファを交互に入れ替える仕組みを何と呼ぶか？",
+            a: "ダブルバッファリング",
+            exp: "描画中の画面を見せないように、裏で描画して完成したら表と入れ替える（Flip/Present）手法。",
+            src: "slides_046.pdf"
+        },
+        {
+            q: "CPUとGPUの同期をとるために使用される、DirectX 12の同期オブジェクトは何か？",
+            a: "Fence (フェンス)",
+            exp: "GPUの処理がどこまで進んだかを確認するために使われる。CPU側でSignalを送り、特定の値になるまでWaitすることで同期をとる。",
+            src: "slides_046.pdf"
+        },
+        {
+            q: "ビュー（RTV, DSV, SRVなど）の情報を格納しておくためのメモリ領域を何と呼ぶか？",
+            a: "Descriptor Heap (デスクリプタヒープ)",
+            exp: "ディスクリプタ（リソースの視点情報）を束ねて管理する場所。描画コマンド発行前に、使用するヒープを設定する必要がある。",
+            src: "slides_015.pdf"
+        },
+        {
+            q: "シェーダープログラムに対して、どのようなデータ（定数バッファ、テクスチャなど）を渡すかを定義した「署名」を何と呼ぶか？",
+            a: "RootSignature (ルートシグネチャ)",
+            exp: "関数の引数リストのようなもの。シェーダーが期待するリソースの配置（スロット番号など）を定義する。",
+            src: "slides_046.pdf"
+        },
+        {
+            q: "シェーダー、ブレンド設定、カリング設定、深度テスト設定などを一つにまとめたオブジェクトを何と呼ぶか？",
+            a: "PSO (Pipeline State Object)",
+            exp: "描画パイプラインの状態をまるごと保存したオブジェクト。DirectX 12ではこれを切り替えることで描画設定を変更する。",
+            src: "slides_046.pdf"
+        },
+        {
+            q: "グラフィックスパイプラインにおいて、頂点座標の変換（ローカル→プロジェクション）を主に行うシェーダーは何か？",
+            a: "Vertex Shader (頂点シェーダー)",
+            exp: "入力された頂点データを、3D空間上の位置から画面上の位置へ変換する役割を持つ。",
+            src: "slides_046.pdf"
+        },
+        {
+            q: "グラフィックスパイプラインにおいて、最終的なピクセルの色を決定するシェーダーは何か？",
+            a: "Pixel Shader (ピクセルシェーダー)",
+            exp: "ラスタライズされた後の各ピクセルについて、ライティングやテクスチャカラーを計算して色を出力する。",
+            src: "slides_046.pdf"
+        },
+        {
+            q: "3Dモデルの「拡大縮小」「回転」「平行移動」を1つの行列で表現したものを何行列と呼ぶか？",
+            a: "ワールド行列 (World Matrix)",
+            exp: "ローカル座標系のモデルを、ゲーム世界（ワールド座標系）の特定の位置・向き・大きさに配置するための行列。",
+            src: "slides_019.pdf"
+        },
+        {
+            q: "一般的に、行列を用いて拡大縮小(S)、回転(R)、平行移動(T)を合成する場合の正しい掛ける順序は？（行ベクトル形式の場合）",
+            a: "S × R × T (SRT)",
+            exp: "まず拡大縮小し、次に回転させ、最後に移動させる。順序を間違えると、意図しない変形（移動してから回転など）になる。",
+            src: "slides_016.pdf"
+        },
+        {
+            q: "カメラのワールド行列の「逆行列」は何行列として利用されるか？",
+            a: "ビュー行列 (View Matrix)",
+            exp: "世界全体を「カメラが原点に来るように」動かすことと等義であるため、カメラの配置行列の逆行列がビュー行列となる。",
+            src: "slides_016.pdf"
+        },
+        {
+            q: "遠近感を表現するために、遠くのものほど小さく描画する投影変換を何と呼ぶか？",
+            a: "透視投影 (Perspective Projection)",
+            exp: "3Dゲームで最も一般的に使われる投影方式。対義語は平行投影（正射影）。",
+            src: "slides_016.pdf"
+        },
+        {
+            q: "ワールド行列、ビュー行列、プロジェクション行列を全て掛け合わせた行列を一般に何と呼ぶか？",
+            a: "WVP行列",
+            exp: "World × View × Projection。頂点シェーダーで頂点座標にこれを掛けることで、最終的な描画位置（クリップ空間座標）が得られる。",
+            src: "slides_019.pdf"
+        },
+        {
+            q: "回転を表現するための数学的概念で、ジンバルロックを防ぎ、滑らかな補間が可能になるものは何か？",
+            a: "Quaternion (クォータニオン / 四元数)",
+            exp: "4つの成分(x, y, z, w)で回転を表す。行列よりもメモリ効率が良く、補間計算（Slerp）に適している。",
+            src: "slides_042.pdf"
+        },
+        {
+            q: "クォータニオン同士の回転を、球面上で最短距離を通るように滑らかに補間する計算方法を何と呼ぶか？",
+            a: "Slerp (球面前形補間)",
+            exp: "Spherical Linear Interpolationの略。線形補間(Lerp)では回転速度が一定にならないため、Slerpが用いられる。",
+            src: "slides_042.pdf"
+        },
+        {
+            q: "クラスのインスタンスがシステム中に常に1つだけであることを保証するデザインパターンは？",
+            a: "Singleton (シングルトン) パターン",
+            exp: "TextureManagerやInputなど、管理クラスでよく使用される。コンストラクタをprivateにし、staticな取得関数(GetInstance)を用意する。",
+            src: "slides_002.pdf"
+        },
+        {
+            q: "インスタンス生成処理をサブクラスや専用のクラスに任せることで、クラス間の結合度を下げるデザインパターンは？",
+            a: "Factory Method パターン",
+            exp: "GE3の授業では、シーン遷移において`SceneFactory`クラスを導入し、シーン名（文字列）から具体的なシーンクラスを生成するために使用した。",
+            src: "slides_001.pdf"
+        },
+        {
+            q: "「状態」をクラス化し、その切り替えによって振る舞いを変えるデザインパターンは？",
+            a: "State (ステート) パターン",
+            exp: "SceneManagerにおけるシーン遷移（タイトル→ゲームプレイ）の実装に使用される。switch文による分岐をなくし、各状態を独立したクラスとして管理できる。",
+            src: "slides_002.pdf"
+        },
+        {
+            q: "C++のスマートポインタで、所有権をただ一つの変数だけが持つことを保証するものは？",
+            a: "std::unique_ptr",
+            exp: "スコープを抜けると自動的にdeleteされるため、メモリリークを防ぐことができる。コピーはできないがムーブ（移動）は可能。",
+            src: "slides_000.pdf"
+        },
+        {
+            q: "DirectXのCOMオブジェクト（ID3D12Deviceなど）を管理するために使われる、Microsoft製のスマートポインタは？",
+            a: "ComPtr (Microsoft::WRL::ComPtr)",
+            exp: "参照カウント方式でCOMオブジェクトの寿命を管理する。変数の破棄時に自動的に `Release()` を呼んでくれる。",
+            src: "slides_010.pdf"
+        },
+        {
+            q: "Visual Studioの「出力」ウィンドウにデバッグ用の文字列を表示するためのWindows API関数は？",
+            a: "OutputDebugString",
+            exp: "printfのようにコンソールに出すのではなく、IDE（Visual Studio）のデバッグ出力に情報を流すために使う。",
+            src: "slides_013.pdf"
+        },
+        {
+            q: "開発用のGUI（デバッグメニューやパラメータ調整用スライダーなど）を簡単に作成できるライブラリは？",
+            a: "ImGui",
+            exp: "Immediate Mode GUIの略。毎フレームGUIの構成をコードで記述するスタイルで、ゲームエンジンのツール作成によく使われる。",
+            src: "slides_012.pdf"
+        },
+        {
+            q: "リリースビルド（製品版）を作成する際、ImGuiなどの開発用機能を無効化するために使うプリプロセッサマクロの慣習的な名前は？",
+            a: "USE_IMGUI (または _DEBUG)",
+            exp: "`#ifdef USE_IMGUI` ... `#endif` で囲むことで、リリース時にはコードが含まれないようにする。",
+            src: "slides_012.pdf"
+        },
+        {
+            q: "多種多様な3Dモデルフォーマット（.obj, .fbx, .gltfなど）を読み込み、統一されたデータ構造で扱えるようにするライブラリは？",
+            a: "Assimp (Open Asset Import Library)",
+            exp: "自前でパーサーを書く手間を省ける。GE3の授業ではモデル読み込み機能の強化として導入。",
+            src: "slides_046.pdf"
+        },
+        {
+            q: "Windows向けの低レベルオーディオAPIで、効果音やBGMの再生・ミキシングに使用されるものは？",
+            a: "XAudio2",
+            exp: "DirectXの一部ではないが、Windowsゲーム開発で標準的に使われるオーディオAPI。",
+            src: "slides_010.pdf"
+        },
+        {
+            q: "MP3やAACなどの圧縮音声ファイルを読み込んでデコードするために使用されるWindows標準APIは？",
+            a: "Media Foundation",
+            exp: "XAudio2自体にはMP3デコード機能がないため、Media Foundationを使ってPCMデータに変換してから再生する。",
+            src: "slides_009.pdf"
+        },
+        {
+            q: "Gitで管理するべきではないファイル（ビルド生成物など）を指定するための設定ファイル名は？",
+            a: ".gitignore",
+            exp: "ここに `*.obj`, `*.exe`, `x64/` などを記述することで、リポジトリの肥大化やコンフリクトを防ぐ。",
+            src: "slides_041.pdf"
+        },
+        {
+            q: "GitHubへのプッシュ時に、自動でビルドやテストを行う仕組み（CI/CD）を実現する機能は？",
+            a: "GitHub Actions",
+            exp: "`.github/workflows` フォルダにYAMLファイルを置くことで、プッシュごとの自動チェック（不要ファイル検出やビルド確認）を設定できる。",
+            src: "slides_041.pdf"
+        },
+        {
+            q: "ゲームエンジン開発において、どのゲームでも使える汎用的な機能群を指す層を何と呼ぶか？",
+            a: "Engine層 (エンジン層)",
+            exp: "対義語は「App層（アプリ層）」。エンジン層は特定のゲームロジック（マリオのジャンプなど）を含んではならない。",
+            src: "slides_005.pdf"
+        },
+        {
+            q: "実装の詳細をヘッダファイルから隠蔽し、コンパイル時間を短縮するためのC++の技法（イディオム）は？",
+            a: "Pimpl (Pointer to Implementation) イディオム",
+            exp: "クラスのメンバ変数を専用の構造体にまとめ、そのポインタだけをメンバに持つ手法。",
+            src: "slides_046.pdf"
+        },
+        {
+            q: "DirectX 12で、テクスチャや定数バッファをシェーダーから参照するために作成するビューは？",
+            a: "SRV (Shader Resource View)",
+            exp: "テクスチャ画像や構造化バッファなどをシェーダーリソースとしてバインドするために必要。",
+            src: "slides_015.pdf"
+        },
+        {
+            q: "スプライト描画において、画像の中心や足元などを基準点として回転・配置するために設定するパラメータは？",
+            a: "アンカーポイント (Anchor Point)",
+            exp: "通常は左上(0,0)だが、(0.5, 0.5)にすると中心基準になる。",
+            src: "slides_022.pdf"
+        },
+        {
+            q: "Visual Studioで、ビルド生成物（.exe, .objなど）の出力先フォルダを変更する主な目的は？",
+            a: "プロジェクトフォルダ内を汚さないため（Git管理の簡素化）",
+            exp: "ソースコードと同じ場所に生成物が混ざると、誤ってコミットしたり掃除が大変になったりするため、`generated` などの別フォルダに出力するのが推奨される。",
+            src: "slides_044.pdf"
+        },
+        {
+            q: "「クラス結合度を下げる」とは、具体的にどのような状態を目指すことか？",
+            a: "クラス同士の相互依存を減らすこと",
+            exp: "あるクラスの変更が他のクラスに影響しにくい状態。ヘッダのインクルードを減らし、前方宣言や抽象クラスを利用することで実現する。",
+            src: "slides_001.pdf"
+        },
+        {
+            q: "DirectX 12において、リソースの状態（書き込み可、読み取り専用など）を遷移させるために発行するコマンドは？",
+            a: "Resource Barrier (リソースバリア)",
+            exp: "例えば、描画先（Render Target）として使った後に、テクスチャとして参照（Pixel Shader Resource）する場合などにバリアを張って遷移させる。",
+            src: "slides_046.pdf"
+        },
+        {
+            q: "ゲームループにおいて、Update（更新）処理とDraw（描画）処理を分ける主な理由は？",
+            a: "ロジック（計算）とレンダリング（出力）の責務を分離するため",
+            exp: "処理落ち時のスキップ対応や、可変フレームレートへの対応がしやすくなる。",
+            src: "slides_005.pdf"
+        },
+        {
+            q: "頂点バッファ（Vertex Buffer）の内容をGPUに伝えるために設定するビューは？",
+            a: "VBV (Vertex Buffer View)",
+            exp: "頂点データの先頭アドレス、サイズ、1頂点あたりのサイズ（ストライド）を記録した構造体。",
+            src: "slides_014.pdf"
+        },
+        {
+            q: "インデックスバッファ（Index Buffer）の内容をGPUに伝えるために設定するビューは？",
+            a: "IBV (Index Buffer View)",
+            exp: "頂点の順番（インデックス）データをGPUに渡すためのビュー。これを使うことで頂点データを共有してメモリを節約できる。",
+            src: "slides_025.pdf"
+        },
+        {
+            q: "DirectXTexライブラリを使用する際、CoInitializeExなどを呼び出して初期化する必要があるWindowsのサブシステムは？",
+            a: "COM (Component Object Model) ライブラリ",
+            exp: "WIC (Windows Imaging Component) を利用して画像を読み込むために、COMの初期化が必須となる。",
+            src: "slides_035.pdf"
+        },
+        {
+            q: "ゲーム終了時に、`delete` したポインタ変数に `nullptr` を代入する主な理由は？",
+            a: "二重解放（ダブルフリー）やダングリングポインタへのアクセスを防ぐため",
+            exp: "解放済みのポインタにアクセスしてクラッシュするバグを防ぐための安全策。",
+            src: "slides_034.pdf"
+        },
+        {
+            q: "`unique_ptr` を関数の引数として渡し、所有権を移動させる場合に使用する関数は？",
+            a: "std::move()",
+            exp: "コピーコンストラクタが削除されているため、moveを使って所有権を移譲する。",
+            src: "slides_000.pdf"
+        },
+        {
+            q: "DirectX 12で、描画対象の画面領域（幅、高さ、深度範囲）を設定する構造体は？",
+            a: "Viewport (ビューポート)",
+            exp: "ラスタライザーがNDC座標（-1～1）をスクリーン座標に変換するために使用する。",
+            src: "slides_031.pdf"
+        },
+        {
+            q: "DirectX 12で、描画を許可する矩形範囲を指定し、その外側を描画しないようにする機能は？",
+            a: "Scissor Rectangle (シザー矩形)",
+            exp: "ビューポートとは別に、描画領域を切り抜く（クリッピングする）ために設定する。",
+            src: "slides_031.pdf"
+        },
+        {
+            q: "モデルの描画において、不透明オブジェクトと半透明オブジェクトはどちらを先に描画すべきか？",
+            a: "不透明オブジェクトを先",
+            exp: "不透明なものを描いて深度バッファを更新した後、半透明なものを奥から順に描画することで、正しい重なり表現とブレンディングができる。",
+            src: "slides_046.pdf"
+        },
+        {
+            q: "テクスチャサンプリングにおいて、テクスチャ座標が0.0～1.0の範囲外になったときの振る舞い（繰り返し、クランプなど）を設定するオブジェクトは？",
+            a: "Sampler (サンプラー) / Static Sampler",
+            exp: "フィルタリングモード（Point/Linear）やアドレッシングモード（Wrap/Clamp/Mirror）を指定する。",
+            src: "slides_046.pdf"
+        },
+        {
+            q: "DirectX 12における「ルート定数 (Root Constants)」とは何か？",
+            a: "少量のデータをルートシグネチャ経由で直接シェーダーに渡す仕組み",
+            exp: "デスクリプタテーブルや定数バッファを作るまでもない、小さな値（行列のインデックスなど）を高速に渡すのに適している。",
+            src: "slides_046.pdf"
+        },
+        {
+            q: "3Dプログラミングにおいて、行列をGPU（シェーダー）に送る際、行優先(Row-Major)と列優先(Column-Major)の違いを吸収するために行う操作は？",
+            a: "転置 (Transpose)",
+            exp: "CPU側（DirectXMathなど）とGPU側（HLSL）で行列のメモリ配置ルールが異なる場合、転置行列にしてから送る必要がある。",
+            src: "slides_019.pdf"
+        },
+        {
+            q: "ゲームエンジン制作で「リファクタリング」を行う最大の目的は？",
+            a: "外部からの振る舞いを変えずに、内部構造を整理して保守性・拡張性を高めること",
+            exp: "バグ修正や機能追加ではなく、コードをきれいにし、将来の変更に強くすることが目的。",
+            src: "slides_037.pdf"
+        },
+        {
+            q: "GitHubで、他人のリポジトリを自分のアカウントにコピーして開発するための機能は？",
+            a: "Fork (フォーク)",
+            exp: "元のリポジトリに直接書き込み権限がない場合、Forkしてから変更を加え、Pull Requestを送るフローが一般的。",
+            src: "slides_048.pdf"
+        }
+    ];
+
+    // 状態管理
+    let currentQuestions = [];
+    let completedCount = 0;
+
+    // 初期化
+    window.onload = function() {
+        currentQuestions = [...questions]; // コピーを作成
+        renderQuestions();
+        updateProgress();
+    };
+
+    // 問題描画
+    function renderQuestions() {
+        const list = document.getElementById('quiz-list');
+        list.innerHTML = '';
+
+        currentQuestions.forEach((item, index) => {
+            const card = document.createElement('div');
+            card.className = 'quiz-card';
+            card.id = `card-${index}`;
+            
+            card.innerHTML = `
+                <div class="q-number">Q.${index + 1}</div>
+                <div class="question">${item.q}</div>
+                <details id="details-${index}">
+                    <summary>答えを見る</summary>
+                    <div class="answer-content">
+                        <div class="answer-text">${item.a}</div>
+                        <div class="explanation">
+                            ${item.exp}
+                            <span class="source-cite">[出典: ${item.src}]</span>
+                        </div>
+                        <button class="check-btn" onclick="markAsDone(${index})">覚えた！ (リストから消す)</button>
+                    </div>
+                </details>
+            `;
+            list.appendChild(card);
+        });
+    }
+
+    // 全開閉
+    let isAllOpen = false;
+    function toggleAllAnswers() {
+        isAllOpen = !isAllOpen;
+        const allDetails = document.querySelectorAll('details');
+        allDetails.forEach(d => {
+            if(isAllOpen) d.setAttribute('open', 'open');
+            else d.removeAttribute('open');
+        });
+    }
+
+    // シャッフル
+    function shuffleQuestions() {
+        for (let i = currentQuestions.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [currentQuestions[i], currentQuestions[j]] = [currentQuestions[j], currentQuestions[i]];
+        }
+        renderQuestions();
+    }
+
+    // 「覚えた」機能
+    function markAsDone(index) {
+        const card = document.getElementById(`card-${index}`);
+        card.style.display = 'none'; // 非表示にする
+        
+        completedCount++;
+        updateProgress();
+    }
+
+    // 進捗更新
+    function updateProgress() {
+        const total = questions.length;
+        const percentage = Math.round((completedCount / total) * 100);
+        
+        document.getElementById('progress-text').innerText = `習得率: ${completedCount} / ${total} (${percentage}%)`;
+        document.getElementById('progress-bar').style.width = `${percentage}%`;
+    }
+
+    // リセット
+    function resetProgress() {
+        if(confirm('進捗をリセットして最初から始めますか？')) {
+            completedCount = 0;
+            currentQuestions = [...questions]; // 並び順もリセットしたい場合はここ
+            // シャッフル状態を維持したいなら、現在の非表示を解除するだけでも良いが、
+            // ここではシンプルに再描画する
+            renderQuestions();
+            updateProgress();
+            window.scrollTo(0, 0);
+        }
+    }
+</script>
+
+</body>
+</html>
