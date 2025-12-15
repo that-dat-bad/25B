@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PG3 テスト対策 予想問題100選（iPhone対応版）</title>
+    <style>
+        :root {
+            --bg-color: #f0f2f5;
+            --text-color: #333;
+            --container-bg: #ffffff;
+            --header-bg: #2c3e50;
+            --header-text: #ffffff;
+            --section-header: #34495e;
+            --accent: #3498db;
+            --correct-bg: #d4edda;
+            --correct-color: #155724;
+            --incorrect-bg: #f8d7da;
+            --incorrect-color: #721c24;
+            --border-color: #dee2e6;
+        }
+
+        /* iOS向けのフォントとベース設定 */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding-bottom: calc(100px + env(safe-area-inset-bottom)); /* スコアバー用の余白 */
+            -webkit-text-size-adjust: 100%;
+            touch-action: manipulation; /* ダブルタップズームを無効化して反応速度アップ */
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: var(--container-bg);
+            padding: 20px 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        /* スマホ用レイアウト */
+        @media (max-width: 600px) {
+            .container {
+                margin: 0;
+                border-radius: 0;
+                padding: 15px 15px;
+                box-shadow: none;
+            }
+            h1 { font-size: 1.2rem; }
+            h2 { font-size: 1.0rem; margin-top: 30px; }
+            button {
+                width: 100%;
+                margin-bottom: 8px;
+                padding: 14px; /* 指で押しやすいサイズに */
+                font-size: 16px; /* iOSでズームされないフォントサイズ */
+            }
+            .btn-group { flex-wrap: wrap; }
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--header-bg);
+            border-bottom: 3px solid var(--accent);
+            padding-bottom: 15px;
+        }
+
+        .controls { text-align: center; margin-bottom: 20px; }
+
+        h2 {
+            background-color: var(--section-header);
+            color: var(--header-text);
+            padding: 10px 15px;
+            border-radius: 4px;
+            margin-top: 40px;
+            font-size: 1.2rem;
+        }
+
+        .question-card {
+            border-bottom: 1px solid var(--border-color);
+            padding: 20px 0;
+        }
+        .question-card:last-child { border-bottom: none; }
+
+        .q-header {
+            display: flex;
+            align-items: flex-start;
+            font-weight: bold;
+            font-size: 1.05em;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .q-num {
+            color: var(--accent);
+            min-width: 45px; /* 番号の幅を確保 */
+        }
+
+        .answer-section {
+            margin-top: 15px;
+            display: none;
+        }
+
+        .answer-section.visible {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .answer-text {
+            background-color: #f8f9fa;
+            border-left: 4px solid var(--accent);
+            padding: 15px;
+            margin-bottom: 15px;
+            white-space: pre-wrap;
+            line-height: 1.6;
+        }
+
+        .btn-group {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: opacity 0.2s, transform 0.1s;
+            -webkit-appearance: none; /* iOSデフォルトのボタン装飾を削除 */
+        }
+
+        button:active { transform: scale(0.98); }
+        button:hover { opacity: 0.9; }
+
+        .reset-btn { background-color: #6c757d; color: white; }
+        .btn-show { background-color: var(--accent); color: white; }
+        .btn-correct { background-color: #28a745; color: white; }
+        .btn-incorrect { background-color: #dc3545; color: white; }
+
+        .question-card.status-correct { background-color: var(--correct-bg); border-radius: 6px; padding: 10px; }
+        .question-card.status-incorrect { background-color: var(--incorrect-bg); border-radius: 6px; padding: 10px; }
+
+        /* スコアバー */
+        .score-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--header-bg);
+            color: white;
+            padding: 15px;
+            padding-bottom: calc(15px + env(safe-area-inset-bottom));
+            text-align: center;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+            font-size: 1.1em;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            z-index: 999;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>PG3 テスト対策<br>予想問題100選</h1>
+    
+    <div class="controls">
+        <button class="reset-btn" onclick="window.resetAll()">進捗をリセット</button>
+    </div>
+
+    <h2>分野1：STL</h2><div id="section1"></div>
+    <h2>分野2：テンプレート</h2><div id="section2"></div>
+    <h2>分野3：ラムダ式・function</h2><div id="section3"></div>
+    <h2>分野4：ポインタ</h2><div id="section4"></div>
+    <h2>分野5：OOP・仮想関数</h2><div id="section5"></div>
+    <h2>分野6：マルチスレッド</h2><div id="section6"></div>
+    <h2>分野7：デザインパターン</h2><div id="section7"></div>
+    <h2>分野8：その他</h2><div id="section8"></div>
+</div>
+
+<div class="score-bar">
+    <div class="score-item">正解: <span id="score-correct">0</span></div>
+    <div class="score-item">率: <span id="score-rate">0</span>%</div>
+</div>
+
+<script>
+    // 問題データ
+    const questions = [
+        // 分野1
+        { q: "STLとは何の略称か。", a: "Standard Template Library", sec: "section1" },
+        { q: "STLの3大構成要素を答えよ（コンテナ、○○○、アルゴリズム）。", a: "イテレータ (Iterator)", sec: "section1" },
+        { q: "std::vector と std::list の主な違いを、メモリアクセスと挿入・削除の観点から説明せよ。", a: "vector：ランダムアクセスが高速、末尾以外への挿入削除は遅い。\nlist：ランダムアクセス不可、任意位置への挿入削除が高速。", sec: "section1" },
+        { q: "std::vector において、末尾への要素追加を行うメンバ関数は何か。", a: "push_back()", sec: "section1" },
+        { q: "std::vector の要素数を変更するメンバ関数は何か。", a: "resize()", sec: "section1" },
+        { q: "std::vector の resize() と reserve() の違いを説明せよ。", a: "resize()：実際に要素数を変更・初期化する。\nreserve()：メモリ容量(capacity)だけ確保する。", sec: "section1" },
+        { q: "双方向リストを使用するためにインクルードすべきヘッダファイル名は何か。", a: "#include <list>", sec: "section1" },
+        { q: "std::list において、先頭に要素を追加するメンバ関数は何か。", a: "push_front()", sec: "section1" },
+        { q: "std::list はランダムアクセス（list[3]のようなアクセス）が可能か。", a: "不可能", sec: "section1" },
+        { q: "コンテナの要素を昇順に並べ替えるアルゴリズム関数は何か。", a: "std::sort()", sec: "section1" },
+        { q: "std::sort を使用するためにインクルードすべきヘッダファイル名は何か。", a: "#include <algorithm>", sec: "section1" },
+        { q: "std::find 関数が見つからなかった場合に返す値は何か。", a: "終端イテレータ (end())", sec: "section1" },
+        { q: "コンテナ内の特定の条件を満たす要素の数を数えるアルゴリズム関数は何か。", a: "std::count()", sec: "section1" },
+        { q: "コンテナの要素を逆順にするアルゴリズム関数は何か。", a: "std::reverse()", sec: "section1" },
+        { q: "std::for_each の第3引数には何を渡す必要があるか。", a: "各要素に対して実行する関数", sec: "section1" },
+        { q: "配列やコンテナの要素を指し示すポインタを抽象化したオブジェクトを何と呼ぶか。", a: "イテレータ (Iterator)", sec: "section1" },
+        { q: "イテレータにおいて、コンテナの「最後の要素の次」を指すメンバ関数は何か。", a: "end()", sec: "section1" },
+        { q: "std::vector で途中の要素を削除した際、それ以降の要素はどうなるか。", a: "前に詰められる（インデックスがずれる）", sec: "section1" },
+        { q: "std::map はどのようなデータ構造でデータを管理するか。", a: "二分木 (赤黒木)", sec: "section1" },
+        { q: "C++11以降、std::vector<int> v = {1, 2}; のような初期化は可能か。", a: "可能", sec: "section1" },
+
+        // 分野2
+        { q: "関数テンプレートを定義する際に使用するキーワードは何か。", a: "template", sec: "section2" },
+        { q: "テンプレート引数 template <typename T> の T は一般的に何を表しているか。", a: "型 (Type)", sec: "section2" },
+        { q: "関数テンプレート add<int>(a, b) のように型を明示して呼び出すことは可能か。", a: "可能", sec: "section2" },
+        { q: "クラステンプレートにおいて、型パラメータを省略してインスタンス化することは可能か（C++17以前）。", a: "不可能 (Box<int> b; のように指定が必要)", sec: "section2" },
+        { q: "異なる型を引数に取る関数テンプレートを作成する場合、テンプレート引数はいくつ必要か。", a: "2つ (例: template <typename T1, typename T2>)", sec: "section2" },
+        { q: "テンプレートの「特殊化」とは何か。", a: "特定の型に対して、専用の処理を定義すること。", sec: "section2" },
+        { q: "関数テンプレートの特殊化を行う際、template <> のように空の括弧を書く必要があるか。", a: "必要", sec: "section2" },
+        { q: "関数のオーバーロードとテンプレートの特殊化の違いは？", a: "オーバーロードは別関数の定義。特殊化は同じテンプレートの例外定義。", sec: "section2" },
+        { q: "クラステンプレートのメンバ関数をクラス外で定義する場合の記述は？", a: "template <typename T> クラス名<T>::関数名", sec: "section2" },
+        { q: "テンプレートはコンパイル時と実行時、いつコードが生成されるか。", a: "コンパイル時", sec: "section2" },
+
+        // 分野3
+        { q: "ラムダ式の基本構文 [ ]( ) { } の各括弧の役割は？", a: "[]:キャプチャ、():引数、{}:処理", sec: "section3" },
+        { q: "ラムダ式において、外部変数をコピーキャプチャする記号は？", a: "=", sec: "section3" },
+        { q: "ラムダ式において、外部変数を参照キャプチャする記号は？", a: "&", sec: "section3" },
+        { q: "[=] と書いた場合、外部変数はどう扱われるか。", a: "全てコピーキャプチャ", sec: "section3" },
+        { q: "[&] と書いた場合、外部変数はどう扱われるか。", a: "全て参照キャプチャ", sec: "section3" },
+        { q: "ラムダ式内でメンバ変数にアクセスするためにキャプチャするものは？", a: "this", sec: "section3" },
+        { q: "std::function を使用するために必要なヘッダは？", a: "#include <functional>", sec: "section3" },
+        { q: "std::function<int(int)> はどんな型か。", a: "intを1つ受け取りintを返す関数型", sec: "section3" },
+        { q: "関数ポインタと比較したstd::functionの利点は？", a: "キャプチャ付きラムダや関数オブジェクトも扱える点", sec: "section3" },
+        { q: "ラムダ式が「無名関数」と呼ばれる理由は？", a: "名前を定義せずにその場で記述できるため", sec: "section3" },
+
+        // 分野4
+        { q: "関数ポインタとは何を格納する変数か。", a: "関数のメモリアドレス", sec: "section4" },
+        { q: "戻り値void、引数なしの関数ポインタ宣言を書け。", a: "void (*p)();", sec: "section4" },
+        { q: "関数ポインタを使用するメリットは？", a: "処理の動的切り替え、コールバックの実装", sec: "section4" },
+        { q: "関数ポインタ p に関数 func を代入する際、&は必須か。", a: "必須ではない (関数名はアドレスに暗黙変換される)", sec: "section4" },
+        { q: "typedef で関数ポインタ型を定義するメリットは？", a: "可読性の向上", sec: "section4" },
+        { q: "メンバ関数ポインタの宣言で必要なものは？", a: "クラス名:: (例: void (A::*p)())", sec: "section4" },
+        { q: "クラスAのメンバ関数Updateへのポインタ宣言は？", a: "void (A::*p)();", sec: "section4" },
+        { q: "メンバ関数ポインタ実行時に必要なものは？", a: "インスタンス (this)", sec: "section4" },
+        { q: "メンバ関数ポインタ配列によるステート管理のメリットは？", a: "if/switch文をなくし、インデックスで処理を切り替えられる", sec: "section4" },
+        { q: "staticメンバ関数へのポインタは通常の関数ポインタとして扱えるか。", a: "扱える (this不要なため)", sec: "section4" },
+
+        // 分野5
+        { q: "ポリモーフィズムとは何か。", a: "同じ呼び出しで、オブジェクトに応じた異なる振る舞いをすること。", sec: "section5" },
+        { q: "ポリモーフィズム実現のために基底クラス関数に付けるキーワードは？", a: "virtual", sec: "section5" },
+        { q: "仮想関数の役割は？", a: "派生クラスでのオーバーライドを可能にする", sec: "section5" },
+        { q: "純粋仮想関数の宣言末尾に書くものは？", a: "= 0", sec: "section5" },
+        { q: "純粋仮想関数を持つクラスを何と呼ぶか。", a: "抽象クラス", sec: "section5" },
+        { q: "抽象クラスのインスタンスは生成できるか。", a: "できない", sec: "section5" },
+        { q: "インターフェイスとして機能するクラスの条件は？", a: "全てのメンバ関数が純粋仮想関数であること", sec: "section5" },
+        { q: "派生クラスで基底クラスの関数を上書きすることを何と呼ぶか。", a: "オーバーライド", sec: "section5" },
+        { q: "オーバーライドを明示するキーワードは？", a: "override", sec: "section5" },
+        { q: "継承時の基底クラスデストラクタには何を付けるべきか。", a: "virtual (仮想デストラクタ)", sec: "section5" },
+        { q: "仮想デストラクタにしないと起きる問題は？", a: "派生クラスのデストラクタが呼ばれずメモリリークする", sec: "section5" },
+        { q: "「is-aの関係」とは？", a: "継承関係 (例: 犬は動物)", sec: "section5" },
+        { q: "「has-aの関係」とは？", a: "包含関係 (例: 車はエンジンを持つ)", sec: "section5" },
+        { q: "UMLで斜体のクラス名は何を意味するか。", a: "抽象クラス", sec: "section5" },
+        { q: "依存関係の逆転原則では何に依存すべきか。", a: "抽象 (インターフェイス)", sec: "section5" },
+
+        // 分野6
+        { q: "シングルスレッドとマルチスレッドの違いは？", a: "処理が順次行われるか、並行して行われるか", sec: "section6" },
+        { q: "std::thread を使うためのヘッダは？", a: "#include <thread>", sec: "section6" },
+        { q: "std::thread th(関数, 引数); 引数はどこに書くか。", a: "関数名の後の引数として", sec: "section6" },
+        { q: "スレッドの終了を待機する関数は？", a: "join()", sec: "section6" },
+        { q: "スレッドをdetachする理由は？", a: "メイン処理を止めずにバックグラウンドで動かすため", sec: "section6" },
+        { q: "排他制御(Mutex)はなぜ必要か。", a: "データ競合(Data Race)を防ぐため", sec: "section6" },
+        { q: "排他制御に使うクラスは std::mutex と何か。", a: "std::lock_guard など", sec: "section6" },
+        { q: "デッドロックとは？", a: "互いにリソース待ちをして処理が止まる状態", sec: "section6" },
+        { q: "lock/unlockを手動で呼ぶ危険性は？", a: "unlock忘れによるデッドロック", sec: "section6" },
+        { q: "スコープ離脱時に自動でロック解除するクラスは？", a: "std::lock_guard", sec: "section6" },
+        { q: "unique_lock と lock_guard の違いは？", a: "unique_lockは手動ロック操作や条件変数での待機が可能", sec: "section6" },
+        { q: "条件変数(condition_variable)の目的は？", a: "スレッドの待機(wait)と通知(notify)", sec: "section6" },
+        { q: "wait()の引数に必要なものは？", a: "unique_lock", sec: "section6" },
+        { q: "待機スレッドを再開させる関数は？", a: "notify_all() / notify_one()", sec: "section6" },
+        { q: "並行(Concurrent)と並列(Parallel)の違いは？", a: "並行は論理的な同時(切替)、並列は物理的な同時(複数コア)", sec: "section6" },
+
+        // 分野7
+        { q: "ステートパターンの目的は？", a: "状態をクラス化し振る舞いを切り替える", sec: "section7" },
+        { q: "ステートパターンで改善できるコードの問題は？", a: "巨大なif/switch文", sec: "section7" },
+        { q: "Stateクラスは通常何を継承するか。", a: "共通のインターフェイス", sec: "section7" },
+        { q: "状態遷移とは？", a: "ある状態から別の状態へ移ること", sec: "section7" },
+        { q: "シーン遷移にステートパターンを使う利点は？", a: "シーンごとの管理が独立し容易になる", sec: "section7" },
+        { q: "Contextクラスの役割は？", a: "現在の状態を保持し、処理を委譲する", sec: "section7" },
+        { q: "コマンドパターンの目的は？", a: "命令をオブジェクトとしてカプセル化する", sec: "section7" },
+        { q: "コマンドパターンで命令はどう表現されるか。", a: "クラス(オブジェクト)", sec: "section7" },
+        { q: "コマンドパターンで実現容易な機能は？", a: "Undo/Redo (履歴管理)", sec: "section7" },
+        { q: "Invokerの役割は？", a: "コマンドを保持・実行する", sec: "section7" },
+        { q: "コマンドにExecute()を持たせる理由は？", a: "実行者が中身を知らずに実行できるため", sec: "section7" },
+        { q: "InputHandlerにコマンドパターンを使う利点は？", a: "入力と動作の疎結合化", sec: "section7" },
+        { q: "ストラテジとステートの構造的類似点は？", a: "どちらもクラスを切り替えて振る舞いを変える", sec: "section7" },
+        { q: "シングルトンパターンの目的は？", a: "インスタンスが1つであることを保証する", sec: "section7" },
+        { q: "単一責任の原則のデザインパターンへの関わりは？", a: "1つのクラスが1つの役割に集中できる", sec: "section7" },
+
+        // 分野8
+        { q: "日本語Windowsのレガシー文字コードは？", a: "Shift_JIS", sec: "section8" },
+        { q: "世界標準の文字コードは？", a: "UTF-8", sec: "section8" },
+        { q: "UTF-8のBOMが引き起こす問題は？", a: "コンパイルエラーや読み込み不良", sec: "section8" },
+        { q: "VSで文字コードを統一する設定ファイルは？", a: ".editorconfig", sec: "section8" },
+        { q: "再帰関数に必須なものは？", a: "終了条件 (ベースケース)", sec: "section8" }
+    ];
+
+    let correctCount = 0;
+    let answeredCount = 0;
+
+    // iPhone対応: グローバルスコープに関数を登録する
+    window.renderQuestions = function() {
+        questions.forEach((item, index) => {
+            const container = document.getElementById(item.sec);
+            if (!container) return;
+
+            const card = document.createElement('div');
+            card.className = 'question-card';
+            card.id = `q-${index}`;
+
+            // innerHTMLでのonclickはグローバル関数を探すため window.showAnswer を呼ぶ
+            card.innerHTML = `
+                <div class="q-header">
+                    <span class="q-num">Q${index + 1}.</span>
+                    <span>${item.q}</span>
+                </div>
+                <div class="btn-group">
+                    <button class="btn-show" onclick="window.showAnswer(${index})">解答を表示</button>
+                </div>
+                <div class="answer-section" id="ans-${index}">
+                    <div class="answer-text"><strong>A.</strong> ${item.a}</div>
+                    <div class="btn-group">
+                        <button class="btn-correct" onclick="window.markResult(${index}, true)">〇 正解！</button>
+                        <button class="btn-incorrect" onclick="window.markResult(${index}, false)">× 復習</button>
+                    </div>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    };
+
+    window.showAnswer = function(index) {
+        const ansDiv = document.getElementById(`ans-${index}`);
+        if(ansDiv) {
+            ansDiv.classList.add('visible');
+            const btn = document.querySelector(`#q-${index} .btn-show`);
+            if(btn) btn.style.display = 'none';
+        }
+    };
+
+    window.markResult = function(index, isCorrect) {
+        const card = document.getElementById(`q-${index}`);
+        if(!card) return;
+        
+        if (!card.classList.contains('status-correct') && !card.classList.contains('status-incorrect')) {
+            answeredCount++;
+            if (isCorrect) correctCount++;
+        } else {
+            if (card.classList.contains('status-correct') && !isCorrect) {
+                correctCount--;
+            } else if (card.classList.contains('status-incorrect') && isCorrect) {
+                correctCount++;
+            }
+        }
+
+        card.classList.remove('status-correct', 'status-incorrect');
+        card.classList.add(isCorrect ? 'status-correct' : 'status-incorrect');
+
+        window.updateScore();
+    };
+
+    window.updateScore = function() {
+        document.getElementById('score-correct').textContent = correctCount;
+        const rate = answeredCount > 0 ? Math.round((correctCount / questions.length) * 100) : 0;
+        document.getElementById('score-rate').textContent = rate;
+    };
+
+    window.resetAll = function() {
+        if(confirm("すべての進捗をリセットしますか？")) {
+            correctCount = 0;
+            answeredCount = 0;
+            window.updateScore();
+            
+            document.querySelectorAll('.question-card').forEach(card => {
+                card.classList.remove('status-correct', 'status-incorrect');
+            });
+            document.querySelectorAll('.answer-section').forEach(ans => {
+                ans.classList.remove('visible');
+            });
+            document.querySelectorAll('.btn-show').forEach(btn => {
+                btn.style.display = 'block';
+            });
+        }
+    };
+
+    // 初期化実行
+    window.onload = function() {
+        window.renderQuestions();
+    };
+</script>
+
+</body>
+</html>
